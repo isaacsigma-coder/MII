@@ -19,13 +19,12 @@
       background: white;
       padding: 30px;
       border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
       text-align: center;
-      max-width: 350px;
     }
     input[type="password"] {
       padding: 10px;
-      width: 80%;
+      width: 200px;
       margin-bottom: 10px;
       border-radius: 5px;
       border: 1px solid #ccc;
@@ -39,7 +38,6 @@
       border-radius: 5px;
       font-size: 16px;
       cursor: pointer;
-      margin-bottom: 10px;
     }
     button:hover {
       background: #1e4e8c;
@@ -65,83 +63,45 @@
 </head>
 <body>
 
-<div id="loginBox">
-  <h2>Buyer Access</h2>
-  <p>Your buyer password (changes each visit):</p>
-  <input type="password" id="buyerPasswordInput" placeholder="Buyer password">
-  <br>
-  <button onclick="checkBuyerPassword()">Submit</button>
-  <p id="buyerErrorMsg" style="color:red; display:none;">Incorrect password.</p>
+  <!-- Password screen -->
+  <div id="loginBox">
+    <h2>Enter Password</h2>
+    <input type="password" id="passwordInput" placeholder="Password">
+    <br>
+    <button onclick="checkPassword()">Submit</button>
+    <p id="errorMsg" style="color: red; display: none;">Incorrect password.</p>
+  </div>
 
-  <hr style="margin:20px 0;">
+  <!-- Content with Google Form -->
+  <div id="content">
+    <header>
+      <h1>Order what you want</h1>
+    </header>
+    <iframe
+      src="https://docs.google.com/forms/d/e/1FAIpQLSfuHFU6Vtjcif79WQfoQf74T42mmnGG-A-wNYzFmVFqaQUKDQ/viewform?embedded=true"
+      title="Google Form"
+      allowfullscreen>
+    </iframe>
+  </div>
 
-  <h2>Admin Access</h2>
-  <input type="password" id="adminPasswordInput" placeholder="Admin password">
-  <br>
-  <button onclick="checkAdminPassword()">Admin Login</button>
-  <p id="adminErrorMsg" style="color:red; display:none;">Incorrect admin password.</p>
-</div>
+  <script>
+    const password = "MII_buyer123";
 
-<div id="content">
-  <header>
-    <h1>Order what you want</h1>
-  </header>
-  <iframe
-    src="https://docs.google.com/forms/d/e/1FAIpQLSfuHFU6Vtjcif79WQfoQf74T42mmnGG-A-wNYzFmVFqaQUKDQ/viewform?embedded=true"
-    title="Google Form"
-    allowfullscreen>
-  </iframe>
-</div>
-
-<script>
-  // Admin password (updated)
-  const adminPassword = "admin_456";
-
-  // Buyer password (generated each visit)
-  const buyerPassword = generateBuyerPassword();
-
-  // Display generated buyer password in console (for testing)
-  console.log("Generated buyer password:", buyerPassword);
-
-  function generateBuyerPassword() {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let pass = "";
-    for(let i=0;i<8;i++) {
-      pass += chars.charAt(Math.floor(Math.random() * chars.length));
+    function checkPassword() {
+      const input = document.getElementById("passwordInput").value;
+      if (input === password) {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("content").style.display = "flex";
+      } else {
+        document.getElementById("errorMsg").style.display = "block";
+      }
     }
-    return pass;
-  }
 
-  function checkBuyerPassword() {
-    const input = document.getElementById("buyerPasswordInput").value;
-    if(input === buyerPassword) {
-      document.getElementById("loginBox").style.display = "none";
-      document.getElementById("content").style.display = "flex";
-    } else {
-      document.getElementById("buyerErrorMsg").style.display = "block";
-    }
-  }
-
-  function checkAdminPassword() {
-    const input = document.getElementById("adminPasswordInput").value;
-    if(input === adminPassword) {
-      alert("Admin logged in! You can now access admin functions.");
-      document.getElementById("adminErrorMsg").style.display = "none";
-    } else {
-      document.getElementById("adminErrorMsg").style.display = "block";
-    }
-  }
-
-  // Allow Enter key for buyer password
-  document.getElementById("buyerPasswordInput").addEventListener("keypress", e => {
-    if(e.key === "Enter") checkBuyerPassword();
-  });
-
-  // Allow Enter key for admin password
-  document.getElementById("adminPasswordInput").addEventListener("keypress", e => {
-    if(e.key === "Enter") checkAdminPassword();
-  });
-</script>
+    // Allow pressing Enter in the password box
+    document.getElementById("passwordInput").addEventListener("keypress", function (e) {
+      if (e.key === "Enter") checkPassword();
+    });
+  </script>
 
 </body>
 </html>
