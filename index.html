@@ -7,133 +7,141 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin:0;
-      background:#f8fafc;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height:100vh;
-      flex-direction:column;
-      user-select: none; 
-      overflow: hidden; 
+      margin: 0;
+      background: #f8fafc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
     }
     #loginBox {
-      background:white;
-      padding:30px;
-      border-radius:10px;
-      box-shadow:0 0 15px rgba(0,0,0,0.2);
-      text-align:center;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      text-align: center;
+      max-width: 350px;
     }
     input[type="password"] {
-      padding:10px;
-      width:200px;
-      margin-bottom:10px;
-      border-radius:5px;
-      border:1px solid #ccc;
-      font-size:16px;
+      padding: 10px;
+      width: 80%;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
     }
     button {
-      padding:10px 20px;
-      background:#2b6cb0;
-      color:white;
-      border:none;
-      border-radius:5px;
-      font-size:16px;
-      cursor:pointer;
+      padding: 10px 20px;
+      background: #2b6cb0;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-bottom: 10px;
     }
     button:hover {
-      background:#1e4e8c;
+      background: #1e4e8c;
     }
     #content {
-      display:none;
-      width:100%;
-      height:100vh;
-      flex-direction:column;
+      display: none;
+      width: 100%;
+      height: 100vh;
+      flex-direction: column;
     }
     header {
-      background:#2b6cb0;
-      color:white;
-      padding:16px;
-      text-align:center;
+      background: #2b6cb0;
+      color: white;
+      padding: 16px;
+      text-align: center;
     }
     iframe {
-      width:100%;
-      height:calc(100vh - 64px);
-      border:none;
+      width: 100%;
+      height: calc(100vh - 64px);
+      border: none;
     }
   </style>
 </head>
 <body>
 
-  <div id="loginBox">
-    <h2>Enter Password</h2>
-    <input type="password" id="passwordInput" placeholder="Password">
-    <br>
-    <button onclick="checkPassword()">Submit</button>
-    <p id="errorMsg" style="color:red; display:none;">Incorrect password.</p>
-  </div>
+<div id="loginBox">
+  <h2>Buyer Access</h2>
+  <p>Your buyer password (changes each visit):</p>
+  <input type="password" id="buyerPasswordInput" placeholder="Buyer password">
+  <br>
+  <button onclick="checkBuyerPassword()">Submit</button>
+  <p id="buyerErrorMsg" style="color:red; display:none;">Incorrect password.</p>
 
-  <div id="content">
-    <header>
-      <h1>Order what you want</h1>
-    </header>
-    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfuHFU6Vtjcif79WQfoQf74T42mmnGG-A-wNYzFmVFqaQUKDQ/viewform?usp=dialog">
-      Loading…
-    </iframe>
-  </div>
+  <hr style="margin:20px 0;">
 
-  <script>
-    const password = "MII_buyer123";
+  <h2>Admin Access</h2>
+  <input type="password" id="adminPasswordInput" placeholder="Admin password">
+  <br>
+  <button onclick="checkAdminPassword()">Admin Login</button>
+  <p id="adminErrorMsg" style="color:red; display:none;">Incorrect admin password.</p>
+</div>
 
-    function checkPassword() {
-      const input = document.getElementById("passwordInput").value;
-      if(input === password) {
-        document.getElementById("loginBox").style.display = "none";
-        document.getElementById("content").style.display = "flex";
-        requestFullScreen();
-      } else {
-        document.getElementById("errorMsg").style.display = "block";
-      }
+<div id="content">
+  <header>
+    <h1>Order what you want</h1>
+  </header>
+  <iframe
+    src="https://docs.google.com/forms/d/e/1FAIpQLSfuHFU6Vtjcif79WQfoQf74T42mmnGG-A-wNYzFmVFqaQUKDQ/viewform?embedded=true"
+    title="Google Form"
+    allowfullscreen>
+  </iframe>
+</div>
+
+<script>
+  // Admin password (fixed)
+  const adminPassword = "MII_admin123";
+
+  // Buyer password (generated each visit)
+  const buyerPassword = generateBuyerPassword();
+
+  // Display generated buyer password in console (for testing)
+  console.log("Generated buyer password:", buyerPassword);
+
+  function generateBuyerPassword() {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let pass = "";
+    for(let i=0;i<8;i++) {
+      pass += chars.charAt(Math.floor(Math.random() * chars.length));
     }
+    return pass;
+  }
 
-    document.getElementById("passwordInput").addEventListener("keypress", function(e) {
-      if(e.key === "Enter") checkPassword();
-    });
-
-    // Close page helper
-    function closePage() {
-      window.close();
-      document.body.innerHTML = "<h2 style='text-align:center; margin-top:50px;'>Page closed due to unauthorized action.</h2>";
+  function checkBuyerPassword() {
+    const input = document.getElementById("buyerPasswordInput").value;
+    if(input === buyerPassword) {
+      document.getElementById("loginBox").style.display = "none";
+      document.getElementById("content").style.display = "flex";
+    } else {
+      document.getElementById("buyerErrorMsg").style.display = "block";
     }
+  }
 
-    // Security protections
-    document.addEventListener("visibilitychange", function() { if(document.hidden) closePage(); });
-    document.addEventListener("keydown", function(e) {
-      if(e.key === "PrintScreen" || (e.ctrlKey && ["c","s","p","u"].includes(e.key.toLowerCase()))) closePage();
-    });
-    document.addEventListener("contextmenu", e => { e.preventDefault(); closePage(); });
-    document.addEventListener("selectstart", e => e.preventDefault());
-
-    // Fullscreen enforcement
-    function requestFullScreen() {
-      const el = document.documentElement;
-      if(el.requestFullscreen) el.requestFullscreen();
-      else if(el.mozRequestFullScreen) el.mozRequestFullScreen();
-      else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-      else if(el.msRequestFullscreen) el.msRequestFullscreen();
+  function checkAdminPassword() {
+    const input = document.getElementById("adminPasswordInput").value;
+    if(input === adminPassword) {
+      alert("Admin logged in! You can now access admin functions.");
+      document.getElementById("adminErrorMsg").style.display = "none";
+    } else {
+      document.getElementById("adminErrorMsg").style.display = "block";
     }
-    document.addEventListener("fullscreenchange", () => { if(!document.fullscreenElement) requestFullScreen(); });
+  }
 
-    // Detect if user leaves browser window (mouse leaves viewport)
-    document.addEventListener("mouseleave", closePage);
+  // Allow Enter key for buyer password
+  document.getElementById("buyerPasswordInput").addEventListener("keypress", e => {
+    if(e.key === "Enter") checkBuyerPassword();
+  });
 
-    // Optional: detect focus lost (desktop or mobile)
-    window.addEventListener("blur", closePage);
-
-    // Optional: mobile home screen / app exit detection
-    window.addEventListener("pagehide", closePage);
-    window.addEventListener("beforeunload", closePage);
-  </script>
+  // Allow Enter key for admin password
+  document.getElementById("adminPasswordInput").addEventListener("keypress", e => {
+    if(e.key === "Enter") checkAdminPassword();
+  });
+</script>
 
 </body>
 </html>
