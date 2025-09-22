@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MII</title>
   <style>
     body {
@@ -62,14 +62,17 @@
   </style>
 </head>
 <body>
+
+  <!-- Password screen -->
   <div id="loginBox">
     <h2>Enter Password</h2>
-    <input type="password" id="passwordInput" placeholder="Password" />
-    <br />
+    <input type="password" id="passwordInput" placeholder="Password">
+    <br>
     <button onclick="checkPassword()">Submit</button>
     <p id="errorMsg" style="color: red; display: none;">Incorrect password.</p>
   </div>
 
+  <!-- Content with Google Form -->
   <div id="content">
     <header>
       <h1>Order what you want</h1>
@@ -77,8 +80,7 @@
     <iframe
       src="https://docs.google.com/forms/d/e/1FAIpQLSfuHFU6Vtjcif79WQfoQf74T42mmnGG-A-wNYzFmVFqaQUKDQ/viewform?embedded=true"
       title="Google Form"
-    >
-      Loading…
+      allowfullscreen>
     </iframe>
   </div>
 
@@ -95,48 +97,11 @@
       }
     }
 
-    document.getElementById("passwordInput").addEventListener("keypress", (e) => {
+    // Allow pressing Enter in the password box
+    document.getElementById("passwordInput").addEventListener("keypress", function (e) {
       if (e.key === "Enter") checkPassword();
     });
-
-    function isFormFocused() {
-      return document.activeElement &&
-             document.activeElement.tagName === "IFRAME";
-    }
-
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) closePage();
-    });
-
-    document.addEventListener("keydown", (e) => {
-      if (isFormFocused()) return;
-      if (
-        e.key === "PrintScreen" ||
-        (e.ctrlKey && ["c", "s", "p", "u"].includes(e.key.toLowerCase()))
-      ) {
-        e.preventDefault();
-        closePage();
-      }
-    });
-
-    document.addEventListener("contextmenu", (e) => {
-      if (!isFormFocused()) {
-        e.preventDefault();
-        closePage();
-      }
-    });
-
-    document.addEventListener("selectstart", (e) => {
-      if (!isFormFocused()) e.preventDefault();
-    });
-
-    function closePage() {
-      if (window.close) {
-        window.close();
-      }
-      document.body.innerHTML =
-        "<h2 style='text-align:center;margin-top:50px;'>Page closed due to unauthorized action.</h2>";
-    }
   </script>
+
 </body>
 </html>
